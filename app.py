@@ -15,7 +15,12 @@ def input_int(prompt):
             return int(input(prompt))
         
         except ValueError:
-            print("Skriv in ett nummer istället.")
+            if choice == "i":
+                for i in range(0, len(inventory)):
+                    print(f"{i + 1}. {inventory[i]}")
+            
+            else:
+                print("Skriv in ett nummer istället.")
 
 # Funktion get_page som tar två argument, book_data och page_id. Den går igenom
 # varje sida i book_data och om sidans id matchar page_id så returnerar den sidan.
@@ -35,6 +40,8 @@ def show_page(page):
     for i, option in enumerate(page["options"]):
         print(f"{i + 1}. {option['text']}")
 
+inventory = []
+
 # Main är huvudfunktionen som körs när programmet startas.
 def main():
     current_id = 1
@@ -44,9 +51,13 @@ def main():
 
         if "loot" in current_page:
             print(f"You found {current_page['loot']}!")
-            # inventory.append(current_page["loot"])
+            inventory.append(current_page["loot"])
 
         choice = input_int("Vad gör du?\n> ")
+
+        # if choice == "i":
+        #     for i in range(0, len(inventory)):
+        #         print(f"{i + 1}. {inventory[i]}")
 
         if 1 <= choice <= len(current_page["options"]):
             current_id = current_page["options"][choice - 1]["next_id"]

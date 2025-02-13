@@ -49,6 +49,7 @@ adventure = [
             {"text": "Försök bryta upp dörren med svärdet", "next_id": 11},
             {"text": "Leta efter en annan väg ut", "next_id": 12},
         ],
+        "loot": "Rusty Sword",
     },
     {
         "id": 6,
