@@ -7,20 +7,27 @@
 # from book import BOOK
 from my_adventure import adventure as BOOK
 
-# Funktion input_int som tar en sträng som argument och returnerar ett heltal.
-# Sträng-argumentet är det som skrivs ut i input prompten.
-def input_int(prompt):
+def player_input(prompt):
     while True:
+        choice = input(prompt)
+
         try:
-            return int(input(prompt))
-        
-        except ValueError:
             if choice == "i":
+                if len(inventory) == 0:
+                    print("Ditt inventory är tomt")
+
                 for i in range(0, len(inventory)):
+                    print("Ditt inventory:")
                     print(f"{i + 1}. {inventory[i]}")
             
+            elif type(int(choice)) == int:
+                return int(choice)
+            
             else:
-                print("Skriv in ett nummer istället.")
+                print("Skriv in ett nummer eller 'i' för att öppna ditt inventory.")
+        
+        except ValueError:
+            print("Skriv in ett nummer eller 'i' för att öppna ditt inventory.")
 
 # Funktion get_page som tar två argument, book_data och page_id. Den går igenom
 # varje sida i book_data och om sidans id matchar page_id så returnerar den sidan.
@@ -49,15 +56,14 @@ def main():
         current_page = get_page(BOOK, current_id)
         show_page(current_page)
 
+        if current_id in [40, 41]:
+            current_id = None
+
         if "loot" in current_page:
-            print(f"You found {current_page['loot']}!")
+            print(f"Du hittade {current_page['loot']}!")
             inventory.append(current_page["loot"])
 
-        choice = input_int("Vad gör du?\n> ")
-
-        # if choice == "i":
-        #     for i in range(0, len(inventory)):
-        #         print(f"{i + 1}. {inventory[i]}")
+        choice = player_input("Vad gör du?\n> ")
 
         if 1 <= choice <= len(current_page["options"]):
             current_id = current_page["options"][choice - 1]["next_id"]
