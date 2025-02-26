@@ -1,5 +1,14 @@
 adventure = [
     {
+        "id": 0,
+        "title": "--- FLYKTEN FRÅN FÄNGELSET ---",
+        "text": "Ett choose-your-own-adventure-spel",
+        "options": [
+            {"text": "Nytt spel", "next_id": 1},
+            {"text": "Ladda spel", "next_id": -1},
+        ],
+    },
+    {
         "id": 1,
         "title": "Välj din karaktär",
         "text": "Du vaknar upp i ett mörkt rum. Minnet är suddigt, men en sak är klar: du är fast i ett gammalt slott. "
@@ -29,6 +38,7 @@ adventure = [
             {"text": "Läs en besvärjelse ur boken", "next_id": 7},
             {"text": "Leta efter en dörr och försöka ta dig ut", "next_id": 8},
         ],
+        "loot": "Trollformelbok",
     },
     {
         "id": 4,
@@ -39,6 +49,7 @@ adventure = [
             {"text": "Försök dyrka upp dörren", "next_id": 9},
             {"text": "Utforska rummet först", "next_id": 10},
         ],
+        "loot": "Dyrk"
     },
     {
         "id": 5,
@@ -49,7 +60,7 @@ adventure = [
             {"text": "Försök bryta upp dörren med svärdet", "next_id": 11},
             {"text": "Leta efter en annan väg ut", "next_id": 12},
         ],
-        "loot": "Rusty Sword",
+        "loot": "Rostigt svärd",
     },
     {
         "id": 6,
@@ -100,6 +111,7 @@ adventure = [
             {"text": "Använd nyckeln på dörren", "next_id": 21},
             {"text": "Behåll nyckeln och försök dyrka låset ändå", "next_id": 9},
         ],
+        "loot": "Mystisk nyckel"
     },
     
     # Pusselavsnittet
@@ -203,6 +215,7 @@ adventure = [
             {"text": "Ta nyckeln och gå genom dörren", "next_id": 21},
             {"text": "Lämna nyckeln och gå vidare", "next_id": 19},
         ],
+        "loot": "Mystisk nyckel"
     },
     {
         "id": 20,

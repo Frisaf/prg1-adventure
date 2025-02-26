@@ -6,6 +6,7 @@
 # as BOOK) för det är variabeln som används i vår kod.
 # from book import BOOK
 from my_adventure import adventure as BOOK
+import json
 
 def player_input(prompt):
     while True:
@@ -15,10 +16,12 @@ def player_input(prompt):
             if choice == "i":
                 if len(inventory) == 0:
                     print("Ditt inventory är tomt")
-
-                for i in range(0, len(inventory)):
+                
+                else:
                     print("Ditt inventory:")
-                    print(f"{i + 1}. {inventory[i]}")
+
+                    for i in range(0, len(inventory)):
+                        print(f"{i + 1}. {inventory[i]}")
             
             elif type(int(choice)) == int:
                 return int(choice)
@@ -51,22 +54,44 @@ inventory = []
 
 # Main är huvudfunktionen som körs när programmet startas.
 def main():
-    current_id = 1
+    current_id = 0
+
+    with open("savegame.json", "r") as f:
+        savedata = json.load(f)
+
+    savedata["Choices"] = []
+
     while True and current_id is not None:
         current_page = get_page(BOOK, current_id)
         show_page(current_page)
 
         if current_id in [40, 41]:
             current_id = None
+        
+        # elif current_id == 0 and current_page["options"][2]["next_id"] == -1:
+        #     load()
 
         if "loot" in current_page:
             print(f"Du hittade {current_page['loot']}!")
-            inventory.append(current_page["loot"])
+
+            if current_page["loot"] not in inventory:
+                inventory.append(current_page["loot"])
+                
+                savedata["Inventory"] = inventory
+
+                with open("savegame.json", "w") as f:
+                    json.dump(savedata, f, indent = 4)
 
         choice = player_input("Vad gör du?\n> ")
 
         if 1 <= choice <= len(current_page["options"]):
             current_id = current_page["options"][choice - 1]["next_id"]
+
+            if current_id != 0: ### FIXES NEEDED HERE
+                savedata["Choices"].append(choice - 1)
+
+                with open("savegame.json", "w") as f:
+                    json.dump(savedata, f, indent = 4)
 
         else:
             print("Det går inte. Försök igen.")
