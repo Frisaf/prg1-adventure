@@ -51,15 +51,16 @@ def show_page(page):
         print(f"{i + 1}. {option['text']}")
 
 inventory = []
+loaded_id = [0]
 
 # Main är huvudfunktionen som körs när programmet startas.
 def main():
-    current_id = 0
+    current_id = loaded_id[0]
 
     with open("savegame.json", "r") as f:
         savedata = json.load(f)
 
-    savedata["Choices"] = []
+    save_count = len(savedata) + 1
 
     while True and current_id is not None:
         current_page = get_page(BOOK, current_id)
@@ -67,9 +68,6 @@ def main():
 
         if current_id in [40, 41]:
             current_id = None
-        
-        # elif current_id == 0 and current_page["options"][2]["next_id"] == -1:
-        #     load()
 
         if "loot" in current_page:
             print(f"Du hittade {current_page['loot']}!")
@@ -77,18 +75,35 @@ def main():
             if current_page["loot"] not in inventory:
                 inventory.append(current_page["loot"])
                 
-                savedata["Inventory"] = inventory
+                if save_count <= len(savedata):
+                    savedata[save_count]["Inventory"] = inventory
 
                 with open("savegame.json", "w") as f:
                     json.dump(savedata, f, indent = 4)
 
         choice = player_input("Vad gör du?\n> ")
 
+        if current_id == 0 and current_page["options"][choice - 1]["next_id"] == -1:
+            print(f"Du har {len(savedata)} sparade spel")
+            save_choice = int(input("Vilken omgång vill du ladda?\n> "))
+            load(save_choice)
+
         if 1 <= choice <= len(current_page["options"]):
             current_id = current_page["options"][choice - 1]["next_id"]
 
-            if current_id != 0: ### FIXES NEEDED HERE
-                savedata["Choices"].append(choice - 1)
+            if current_page["options"][0]["next_id"] == 1:
+                savedata[save_count] = {}
+
+                with open("savegame.json", "w") as f:
+                    json.dump(savedata, f, indent = 4)
+
+                savedata[save_count]["Choices"] = []
+
+                with open("savegame.json", "w") as f:
+                    json.dump(savedata, f, indent = 4)
+
+            if current_id - 1 != 0:
+                savedata[save_count]["Choices"].append(choice - 1)
 
                 with open("savegame.json", "w") as f:
                     json.dump(savedata, f, indent = 4)
@@ -96,6 +111,28 @@ def main():
         else:
             print("Det går inte. Försök igen.")
             current_id = None
+
+def load(save):
+    with open("savegame.json", "r") as f:
+        savedata = json.load(f)
+
+    saved_game = str(save)
+
+    for item in savedata[saved_game]["Inventory"]:
+        inventory.append(item)
+
+    current_id = 1
+    current_page = get_page(BOOK, current_id)
+    current_choice_index = 0
+
+    while True:
+        if current_choice_index >= len(savedata[saved_game]["Choices"]):
+            loaded_id[0] = current_id
+            main()
+        
+        else:
+            current_id = current_page["options"][savedata[saved_game]["Choices"][current_choice_index]]["next_id"]
+            current_choice_index += 1
 
 if __name__ == "__main__":
     main() # starta main-funktionen
