@@ -81,12 +81,25 @@ def main():
                 with open("savegame.json", "w") as f:
                     json.dump(savedata, f, indent = 4)
 
-        choice = player_input("Vad gör du?\n> ")
+        while True:
+            choice = player_input("Vad gör du?\n> ")
 
-        if current_id == 0 and current_page["options"][choice - 1]["next_id"] == -1:
-            print(f"Du har {len(savedata)} sparade spel")
-            save_choice = int(input("Vilken omgång vill du ladda?\n> "))
-            load(save_choice)
+            if current_id == 0 and current_page["options"][choice - 1]["next_id"] == -1:
+                if savedata == {}:
+                    print("Du har inga sparade spel")
+                
+                else:
+                    print(f"Du har {len(savedata)} sparade spel")
+
+                    try:
+                        save_choice = int(input("Vilken omgång vill du ladda?\n> "))
+                        load(save_choice)
+                    
+                    except ValueError:
+                        print("Skriv in en siffra istället.")
+            
+            else:
+                break
 
         if 1 <= choice <= len(current_page["options"]):
             current_id = current_page["options"][choice - 1]["next_id"]
@@ -103,14 +116,17 @@ def main():
                     json.dump(savedata, f, indent = 4)
 
             if current_id - 1 != 0:
-                savedata[save_count]["Choices"].append(choice - 1)
+                try:
+                    savedata[save_count]["Choices"].append(choice - 1)
+                
+                except KeyError:
+                    savedata[str(save_count - 1)]["Choices"].append(choice - 1)
 
                 with open("savegame.json", "w") as f:
                     json.dump(savedata, f, indent = 4)
 
         else:
             print("Det går inte. Försök igen.")
-            current_id = None
 
 def load(save):
     with open("savegame.json", "r") as f:
@@ -122,7 +138,6 @@ def load(save):
         inventory.append(item)
 
     current_id = 1
-    current_page = get_page(BOOK, current_id)
     current_choice_index = 0
 
     while True:
@@ -131,7 +146,9 @@ def load(save):
             main()
         
         else:
-            current_id = current_page["options"][savedata[saved_game]["Choices"][current_choice_index]]["next_id"]
+            current_choice = savedata[saved_game]["Choices"][current_choice_index]
+            current_page = get_page(BOOK, current_id)
+            current_id = current_page["options"][current_choice]["next_id"]
             current_choice_index += 1
 
 if __name__ == "__main__":
