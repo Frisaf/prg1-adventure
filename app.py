@@ -6,7 +6,7 @@
 # as BOOK) för det är variabeln som används i vår kod.
 # from book import BOOK
 from my_adventure import adventure as BOOK
-import json
+import json, sys
 
 def player_input(prompt):
     while True:
@@ -67,7 +67,19 @@ def main():
         show_page(current_page)
 
         if current_id in [40, 41]:
-            current_id = None
+            print("Grattis, du klarade spelet! Du kan starta en ny runda, eller starta om spelet.\n1. Starta om\n2. Avsluta")
+            end_choice = input("Vad gör du?\n> ")
+
+            while True:
+                if end_choice == "1":
+                    loaded_id[0] = 0
+                    main()
+                
+                elif end_choice == "2":
+                    sys.exit()
+                
+                else:
+                    print("Det går inte. Försök igen.")
 
         if "loot" in current_page:
             print(f"Du hittade {current_page['loot']}!")
@@ -93,7 +105,12 @@ def main():
 
                     try:
                         save_choice = int(input("Vilken omgång vill du ladda?\n> "))
-                        load(save_choice)
+
+                        try:
+                            load(save_choice)
+                        
+                        except KeyError:
+                            print("Kan inte hitta den angivna sparfilen. Skrev du rätt?")
                     
                     except ValueError:
                         print("Skriv in en siffra istället.")
