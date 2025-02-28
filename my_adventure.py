@@ -2,10 +2,11 @@ adventure = [
     {
         "id": 0,
         "title": "--- FLYKTEN FRÅN FÄNGELSET ---",
-        "text": "Ett choose-your-own-adventure-spel",
+        "text": "Ett choose-your-own-adventure-spel\nSkriv in den siffra som representerar det du vill göra i terminalen och tryck ENTER.",
         "options": [
             {"text": "Nytt spel", "next_id": 1},
             {"text": "Ladda spel", "next_id": -1},
+            {"text": "Hur man spelar", "next_id": -2}
         ],
     },
     {

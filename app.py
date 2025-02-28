@@ -115,6 +115,9 @@ def main():
                     except ValueError:
                         print("Skriv in en siffra istället.")
             
+            elif current_id == 0 and current_page["options"][choice - 1]["next_id"] == -2:
+                instructions()
+            
             else:
                 break
 
@@ -167,6 +170,11 @@ def load(save):
             current_page = get_page(BOOK, current_id)
             current_id = current_page["options"][current_choice]["next_id"]
             current_choice_index += 1
+
+def instructions():
+    print("Varje val kommer att skriva ut en ny beskrivning i terminalen med ett antal nya val. Skriv in den siffra som representerar det du vill göra i terminalen och tryck ENTER.\nSkriv 'i' istället för någon siffra för att öppna ditt inventory.")
+    input("Tryck ENTER för att fortsätta")
+    main()
 
 if __name__ == "__main__":
     main() # starta main-funktionen
